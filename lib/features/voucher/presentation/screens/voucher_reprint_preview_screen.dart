@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/voucher_layout.dart';
+import '../../../../core/constants/receipt_strings.dart';
 import '../../../../core/layout/app_responsive.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../providers/printer_provider.dart';
@@ -75,12 +76,11 @@ class _VoucherReprintPreviewScreenState
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Voucher reprinted successfully.'),
-        ),
+        const SnackBar(content: Text('Voucher reprinted successfully.')),
       );
       Navigator.of(context).popUntil((route) {
-        return route.settings.name == ParcelListScreen.routeName || route.isFirst;
+        return route.settings.name == ParcelListScreen.routeName ||
+            route.isFirst;
       });
     } finally {
       if (mounted) {
@@ -150,9 +150,7 @@ class _VoucherReprintPreviewScreenState
               children: [
                 Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: previewWidth,
-                    ),
+                    constraints: BoxConstraints(maxWidth: previewWidth),
                     child: FittedBox(
                       fit: BoxFit.contain,
                       alignment: Alignment.topCenter,
@@ -168,6 +166,16 @@ class _VoucherReprintPreviewScreenState
                     ),
                   ),
                 ),
+                if ((preview.parcel.ledgerId ?? '').trim().isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    '${ReceiptStrings.ledgerIdLabel}: ${preview.parcel.ledgerId!.trim()}',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
                 if ((preview.parcel.parcelImagePath ?? '').isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.md),
                   ParcelImagePreviewCard(

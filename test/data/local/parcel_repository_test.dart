@@ -32,6 +32,7 @@ void main() {
     expect(saved.syncedAt, isNull);
     expect(saved.cashAdvance, 0);
     expect(saved.parcelImagePath, 'C:/parcel-images/sample.jpg');
+    expect(saved.ledgerId, 'LEDGER-001');
   });
 
   test('updates a parcel and refreshes updatedAt', () async {
@@ -68,6 +69,7 @@ void main() {
 
     expect(saved, isNotNull);
     expect(saved!.receiverName, 'Ma Su');
+    expect(saved.ledgerId, 'LEDGER-001');
   });
 
   test('counts parcels by city code, account code, and date for tracking IDs', () async {
@@ -133,6 +135,7 @@ ParcelModel _buildParcel({
     senderPhone: '0912345678',
     receiverName: 'Ma Su',
     receiverPhone: '0998765432',
+    ledgerId: 'LEDGER-001',
     parcelType: 'Document',
     numberOfParcels: 1,
     totalCharges: 7000,

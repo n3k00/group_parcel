@@ -32,6 +32,16 @@ class ParcelRepository {
     return rows.map(ParcelMapper.toModel).toList();
   }
 
+  Future<List<ParcelModel>> getParcelsBySyncStatus(
+    List<SyncStatus> statuses,
+  ) async {
+    final rows = await _parcelsDao.getAllParcels();
+    return rows
+        .map(ParcelMapper.toModel)
+        .where((parcel) => statuses.contains(parcel.syncStatus))
+        .toList();
+  }
+
   Future<List<ParcelModel>> searchParcels(String query) async {
     final rows = await _parcelsDao.searchParcels(query);
     return rows.map(ParcelMapper.toModel).toList();
@@ -105,6 +115,7 @@ class ParcelRepository {
         senderPhone: parcelToCreate.senderPhone,
         receiverName: parcelToCreate.receiverName,
         receiverPhone: parcelToCreate.receiverPhone,
+        ledgerId: Value(parcelToCreate.ledgerId),
         parcelType: parcelToCreate.parcelType,
         numberOfParcels: parcelToCreate.numberOfParcels,
         totalCharges: parcelToCreate.totalCharges,
@@ -123,7 +134,12 @@ class ParcelRepository {
   }
 
   Future<bool> updateParcel(ParcelModel parcel) {
-    final parcelToUpdate = parcel.copyWith(updatedAt: DateTime.now());
+    final parcelToUpdate = parcel.copyWith(
+      updatedAt: DateTime.now(),
+      syncStatus: SyncStatus.pending,
+      syncedAt: null,
+      clearSyncedAt: true,
+    );
     return _parcelsDao.updateParcel(
       ParcelsCompanion(
         id: Value(parcelToUpdate.id!),
@@ -137,6 +153,7 @@ class ParcelRepository {
         senderPhone: Value(parcelToUpdate.senderPhone),
         receiverName: Value(parcelToUpdate.receiverName),
         receiverPhone: Value(parcelToUpdate.receiverPhone),
+        ledgerId: Value(parcelToUpdate.ledgerId),
         parcelType: Value(parcelToUpdate.parcelType),
         numberOfParcels: Value(parcelToUpdate.numberOfParcels),
         totalCharges: Value(parcelToUpdate.totalCharges),
@@ -156,5 +173,126 @@ class ParcelRepository {
 
   Future<int> deleteParcel(int id) {
     return _parcelsDao.deleteParcelById(id);
+  }
+
+  Future<void> markParcelSynced(
+    String trackingId, {
+    DateTime? syncedAt,
+  }) async {
+    final existing = await getParcelByTrackingId(trackingId);
+    if (existing == null) {
+      return;
+    }
+
+    await _saveExactParcel(
+      existing.copyWith(
+        syncStatus: SyncStatus.synced,
+        syncedAt: syncedAt ?? DateTime.now(),
+      ),
+    );
+  }
+
+  Future<void> markParcelSyncFailed(String trackingId) async {
+    final existing = await getParcelByTrackingId(trackingId);
+    if (existing == null) {
+      return;
+    }
+
+    await _saveExactParcel(
+      existing.copyWith(
+        syncStatus: SyncStatus.failed,
+        clearSyncedAt: true,
+      ),
+    );
+  }
+
+  Future<void> saveCloudParcel(
+    ParcelModel cloudParcel, {
+    String? preserveImagePath,
+  }) async {
+    final existing = await getParcelByTrackingId(cloudParcel.trackingId);
+    final normalized = cloudParcel.copyWith(
+      id: existing?.id,
+      parcelImagePath: preserveImagePath ?? existing?.parcelImagePath,
+      syncStatus: SyncStatus.synced,
+      syncedAt: DateTime.now(),
+    );
+    await _saveExactParcel(normalized);
+  }
+
+  Future<void> _saveExactParcel(ParcelModel parcel) async {
+    final existing = parcel.id != null
+        ? await getParcel(parcel.id!)
+        : await getParcelByTrackingId(parcel.trackingId);
+
+    if (existing == null) {
+      await _parcelsDao.insertParcel(_toInsertCompanion(parcel));
+      return;
+    }
+
+    await _parcelsDao.updateParcel(
+      _toUpdateCompanion(
+        parcel.copyWith(id: existing.id),
+      ),
+    );
+  }
+
+  ParcelsCompanion _toInsertCompanion(ParcelModel parcel) {
+    return ParcelsCompanion.insert(
+      trackingId: parcel.trackingId,
+      createdAt: parcel.createdAt,
+      fromTown: parcel.fromTown,
+      toTown: parcel.toTown,
+      cityCode: parcel.cityCode,
+      accountCode: parcel.accountCode,
+      senderName: parcel.senderName,
+      senderPhone: parcel.senderPhone,
+      receiverName: parcel.receiverName,
+      receiverPhone: parcel.receiverPhone,
+      ledgerId: Value(parcel.ledgerId),
+      parcelType: parcel.parcelType,
+      numberOfParcels: parcel.numberOfParcels,
+      totalCharges: parcel.totalCharges,
+      paymentStatus: parcel.paymentStatus,
+      cashAdvance: Value(parcel.cashAdvance),
+      parcelImagePath: Value(parcel.parcelImagePath),
+      remark: Value(parcel.remark),
+      status: Value(parcel.status),
+      syncStatus: Value(parcel.syncStatus),
+      syncedAt: Value(parcel.syncedAt),
+      arrivedAt: Value(parcel.arrivedAt),
+      claimedAt: Value(parcel.claimedAt),
+      updatedAt: parcel.updatedAt,
+    );
+  }
+
+  ParcelsCompanion _toUpdateCompanion(ParcelModel parcel) {
+    return ParcelsCompanion(
+      id: Value(parcel.id!),
+      trackingId: Value(parcel.trackingId),
+      createdAt: Value(parcel.createdAt),
+      fromTown: Value(parcel.fromTown),
+      toTown: Value(parcel.toTown),
+      cityCode: Value(parcel.cityCode),
+      accountCode: Value(parcel.accountCode),
+      senderName: Value(parcel.senderName),
+      senderPhone: Value(parcel.senderPhone),
+      receiverName: Value(parcel.receiverName),
+      receiverPhone: Value(parcel.receiverPhone),
+      ledgerId: Value(parcel.ledgerId),
+      parcelType: Value(parcel.parcelType),
+      numberOfParcels: Value(parcel.numberOfParcels),
+      totalCharges: Value(parcel.totalCharges),
+      paymentStatus: Value(parcel.paymentStatus),
+      cashAdvance: Value(parcel.cashAdvance),
+      parcelImagePath: Value(parcel.parcelImagePath),
+      remark: Value(parcel.remark),
+      status: Value(parcel.status),
+      syncStatus: Value(parcel.syncStatus),
+      syncedAt: Value(parcel.syncedAt),
+      arrivedAt: Value(parcel.arrivedAt),
+      claimedAt: Value(parcel.claimedAt),
+      updatedAt: Value(parcel.updatedAt),
+    );
   }
 }

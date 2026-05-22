@@ -5,8 +5,10 @@ class AppPreferences {
 
   static const _cityCodeKey = 'setup_city_code';
   static const _accountCodeKey = 'setup_account_code';
+  static const _loginPhoneNumberKey = 'login_phone_number';
   static const _defaultSourceTownNameKey = 'default_source_town_name';
   static const _businessNameKey = 'business_name';
+  static const _lastSuccessfulSyncAtKey = 'last_successful_sync_at';
   static const _businessSubtitleKey = 'business_subtitle';
   static const _businessAddressKey = 'business_address';
   static const _businessPhoneKey = 'business_phone';
@@ -36,8 +38,18 @@ class AppPreferences {
 
   String? getAccountCode() => _preferences.getString(_accountCodeKey);
 
+  String? getLoginPhoneNumber() => _preferences.getString(_loginPhoneNumberKey);
+
   String? getDefaultSourceTownName() =>
       _preferences.getString(_defaultSourceTownNameKey);
+
+  DateTime? getLastSuccessfulSyncAt() {
+    final value = _preferences.getString(_lastSuccessfulSyncAtKey);
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+    return DateTime.tryParse(value);
+  }
 
   Future<bool> setCityCode(String value) {
     return _preferences.setString(_cityCodeKey, value);
@@ -47,8 +59,19 @@ class AppPreferences {
     return _preferences.setString(_accountCodeKey, value);
   }
 
+  Future<bool> setLoginPhoneNumber(String value) {
+    return _preferences.setString(_loginPhoneNumberKey, value);
+  }
+
   Future<bool> setDefaultSourceTownName(String value) {
     return _preferences.setString(_defaultSourceTownNameKey, value);
+  }
+
+  Future<bool> setLastSuccessfulSyncAt(DateTime value) {
+    return _preferences.setString(
+      _lastSuccessfulSyncAtKey,
+      value.toIso8601String(),
+    );
   }
 
   String? getBusinessName() => _preferences.getString(_businessNameKey);

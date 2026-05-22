@@ -1,3 +1,5 @@
+import '../utils/date_utils.dart';
+
 abstract final class AppStrings {
   static const appName = 'Group Parcel';
   static const appTagline = 'Counter operations';
@@ -7,7 +9,7 @@ abstract final class AppStrings {
 
   static const profileTitle = 'Profile';
   static const profileSubtitle =
-      'Edit account code and future profile settings.';
+      'View the account code used for new tracking IDs.';
   static const fromTownTitle = 'From Town';
   static const fromTownSubtitle =
       'Choose the default source town for the form.';
@@ -25,6 +27,17 @@ abstract final class AppStrings {
   static const backupRestoreTitle = 'Backup and Restore';
   static const backupRestoreSubtitle =
       'Manage local offline data backup and restore tools.';
+  static const syncSectionTitle = 'Cloud Sync';
+  static const syncIdleTitle = 'Ready to sync';
+  static const syncInProgressTitle = 'Sync in progress';
+  static const syncSuccessTitle = 'Last sync completed';
+  static const syncFailedTitle = 'Last sync failed';
+  static const syncNowAction = 'Sync Now';
+  static const syncingAction = 'Syncing...';
+  static const syncIdleMessage =
+      'Sync your local parcel history with Firestore.';
+  static const syncInProgressMessage = 'Syncing local and cloud parcel data...';
+  static const syncPullHint = 'Pull down to sync the latest parcel history.';
   static const fullBackupTitle = 'Full Backup';
   static const fullBackupSubtitle =
       'Create a zip backup with the SQLite database and parcel images.';
@@ -81,6 +94,8 @@ abstract final class AppStrings {
   static const saveChanges = 'Save Changes';
   static const requiredField = 'Required.';
   static const accountCodeLabel = 'Account Code';
+  static const accountCodeHelper =
+      'Auto-generated from the last 3 digits of the login phone number.';
   static const profileSaved = 'Profile settings saved.';
 
   static const noSourceTowns = 'No source towns available.';
@@ -103,4 +118,7 @@ abstract final class AppStrings {
 
   static String restoreFromFilePrompt(String path) =>
       'Restore from:\n$path\n\n$restoreWarning';
+
+  static String syncLastRun(DateTime value) =>
+      'Last synced: ${AppDateUtils.formatDateTime12Hour(value)}';
 }

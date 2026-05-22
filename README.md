@@ -89,3 +89,30 @@ storeFile=../../keystores/group-release.jks
 flutter analyze
 flutter test
 ```
+
+## Firestore Rules
+
+This project includes a locked-down Firestore rules file:
+
+- [firestore.rules](/C:/projects/group/group_mobile/firestore.rules)
+- [firebase.json](/C:/projects/group/group_mobile/firebase.json)
+
+Current policy:
+
+- authenticated users can read/write `parcels`
+- authenticated users can read/write `users`
+- everything else is denied by default
+
+This matches the current product decision:
+
+- every signed-in user can see all synced parcel data
+- public unauthenticated access is blocked
+- disabled-user strategy will be handled in a later phase
+
+### Deploy Rules
+
+```powershell
+firebase login
+firebase use <your-firebase-project-id>
+firebase deploy --only firestore:rules
+```

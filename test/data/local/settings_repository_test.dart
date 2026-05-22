@@ -30,10 +30,47 @@ void main() {
   test('returns default address font size in app setup', () async {
     final setup = await repository.getAppSetup();
 
+    expect(setup.businessName, ReceiptStrings.defaultBusinessName);
     expect(setup.businessSubtitle, ReceiptStrings.defaultBusinessSubtitle);
     expect(setup.businessSubtitleFontSize, 28);
     expect(setup.businessAddressFontSize, 22);
     expect(setup.businessAddress, ReceiptStrings.defaultBusinessAddress);
+  });
+
+  test('uses login phone last 3 digits as account code', () async {
+    repository = SettingsRepository(
+      await AppPreferences.create(),
+      loginPhoneNumberProvider: () => '09421000123',
+    );
+
+    final setup = await repository.getAppSetup();
+
+    expect(setup.accountCode, '123');
+  });
+
+  test('does not persist manual account code from setup saves', () async {
+    final preferences = await AppPreferences.create();
+    repository = SettingsRepository(
+      preferences,
+      loginPhoneNumberProvider: () => '09421000456',
+    );
+
+    final setup = await repository.getAppSetup();
+    await repository.saveAppSetup(setup.copyWith(accountCode: 'A1'));
+
+    expect(preferences.getAccountCode(), isNull);
+    expect((await repository.getAppSetup()).accountCode, '456');
+  });
+
+  test('migrates legacy receipt title to Group', () async {
+    SharedPreferences.setMockInitialValues({'business_name': 'Group Parcel'});
+    final preferences = await AppPreferences.create();
+    repository = SettingsRepository(preferences);
+
+    final setup = await repository.getAppSetup();
+
+    expect(setup.businessName, 'Group');
+    expect(preferences.getBusinessName(), 'Group');
   });
 
   test('loads saved subtitle settings when present', () async {

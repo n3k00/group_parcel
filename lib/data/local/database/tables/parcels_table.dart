@@ -12,6 +12,7 @@ class Parcels extends Table {
   TextColumn get senderPhone => text().named('sender_phone')();
   TextColumn get receiverName => text().named('receiver_name')();
   TextColumn get receiverPhone => text().named('receiver_phone')();
+  TextColumn get ledgerId => text().named('ledger_id').nullable()();
   TextColumn get parcelType => text().named('parcel_type')();
   IntColumn get numberOfParcels => integer().named('number_of_parcels')();
   RealColumn get totalCharges => real().named('total_charges')();

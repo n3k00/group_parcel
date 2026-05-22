@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/parcel/presentation/screens/create_parcel_screen.dart';
 import '../../features/parcel/presentation/screens/home_screen.dart';
 import '../../features/parcel/presentation/screens/parcel_list_screen.dart';
@@ -21,7 +23,21 @@ class AppRouter {
   const AppRouter._();
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    final routeName = settings.name;
+    if (_requiresAuthentication(routeName) &&
+        FirebaseAuth.instance.currentUser == null) {
+      return MaterialPageRoute(
+        builder: (_) => const LoginScreen(),
+        settings: const RouteSettings(name: LoginScreen.routeName),
+      );
+    }
+
     switch (settings.name) {
+      case LoginScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+          settings: settings,
+        );
       case HomeScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => const HomeScreen(),
@@ -125,5 +141,9 @@ class AppRouter {
         body: AppErrorView(message: message),
       ),
     );
+  }
+
+  static bool _requiresAuthentication(String? routeName) {
+    return routeName != null && routeName != LoginScreen.routeName;
   }
 }

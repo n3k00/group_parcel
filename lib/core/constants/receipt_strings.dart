@@ -1,7 +1,7 @@
 import '../../data/models/enums/payment_status.dart';
 
 abstract final class ReceiptStrings {
-  static const defaultBusinessName = 'Group Parcel';
+  static const defaultBusinessName = 'Group';
   static const defaultBusinessSubtitle = 'ကုန်စည်ပို့ဆောင်ရေး';
   static const defaultBusinessAddress = 'Offline-first Android operations';
   static const defaultBusinessPhone = '';
@@ -14,6 +14,7 @@ abstract final class ReceiptStrings {
   static const toTownLabel = 'ပို့မည့် မြို့';
   static const senderNameLabel = 'ပေးပို့သူအမည်';
   static const receiverNameLabel = 'လက်ခံသူအမည်';
+  static const ledgerIdLabel = 'Ledger ID';
   static const parcelTypeLabel = 'အမျိုးအစား';
   static const parcelCountLabel = 'အရေအတွက်';
   static const totalChargesLabel = 'ပို့ဆောင်ခ';

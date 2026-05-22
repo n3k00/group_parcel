@@ -84,13 +84,25 @@ void main() {
     expect(find.text(AppStrings.voucherHeaderTitle), findsOneWidget);
     expect(find.text(AppStrings.receiptSettingsTitle), findsOneWidget);
     expect(find.text(AppStrings.toTownTitle), findsOneWidget);
-    expect(find.text(AppStrings.printerSettingsTitle), findsOneWidget);
-    expect(find.text(AppStrings.backupRestoreTitle), findsOneWidget);
-    expect(find.text('Account Info'), findsNothing);
 
     await tester.tap(find.text(AppStrings.profileTitle));
     await tester.pumpAndSettle();
 
     expect(find.text('Profile Page'), findsOneWidget);
+
+    Navigator.of(
+      tester.element(find.text('Profile Page')),
+    ).pop();
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.text(AppStrings.printerSettingsTitle),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text(AppStrings.printerSettingsTitle), findsOneWidget);
+    expect(find.text(AppStrings.backupRestoreTitle), findsOneWidget);
+    expect(find.text('Account Info'), findsNothing);
   });
 }

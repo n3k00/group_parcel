@@ -252,18 +252,12 @@ class _MetaRow extends StatelessWidget {
       children: [
         Expanded(
           flex: 2,
-          child: Text(
-            label,
-            style: _ReceiptStyles.label(setup, isPrintable),
-          ),
+          child: Text(label, style: _ReceiptStyles.label(setup, isPrintable)),
         ),
         SizedBox(width: isPrintable ? 16 : 12),
         Expanded(
           flex: 3,
-          child: Text(
-            value,
-            style: _ReceiptStyles.value(setup, isPrintable),
-          ),
+          child: Text(value, style: _ReceiptStyles.value(setup, isPrintable)),
         ),
       ],
     );
@@ -290,18 +284,12 @@ class _LabelValueRow extends StatelessWidget {
       children: [
         Expanded(
           flex: 2,
-          child: Text(
-            label,
-            style: _ReceiptStyles.label(setup, isPrintable),
-          ),
+          child: Text(label, style: _ReceiptStyles.label(setup, isPrintable)),
         ),
         SizedBox(width: isPrintable ? 16 : 12),
         Expanded(
           flex: 3,
-          child: Text(
-            value,
-            style: _ReceiptStyles.value(setup, isPrintable),
-          ),
+          child: Text(value, style: _ReceiptStyles.value(setup, isPrintable)),
         ),
       ],
     );
@@ -421,11 +409,7 @@ class _DashedDivider extends StatelessWidget {
             count,
             (_) => const SizedBox(
               width: dashWidth,
-              child: Divider(
-                height: 1,
-                thickness: 2.4,
-                color: Colors.black87,
-              ),
+              child: Divider(height: 1, thickness: 2.4, color: Colors.black87),
             ),
           ),
         );
@@ -446,13 +430,14 @@ class _ReceiptStyles {
       );
 
   static TextStyle address(AppSetupConfig setup, bool isPrintable) => TextStyle(
-        fontSize: _scale(setup.businessAddressFontSize, isPrintable, 1.08),
-        fontWeight: FontWeight.w500,
-        height: 1.2,
-        color: Colors.black,
-      );
+    fontSize: _scale(setup.businessAddressFontSize, isPrintable, 1.08),
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+    color: Colors.black,
+  );
 
-  static TextStyle subtitle(AppSetupConfig setup, bool isPrintable) => TextStyle(
+  static TextStyle subtitle(AppSetupConfig setup, bool isPrintable) =>
+      TextStyle(
         fontSize: _scale(setup.businessSubtitleFontSize, isPrintable, 1.08),
         fontWeight: FontWeight.w600,
         height: 1.18,
@@ -460,32 +445,32 @@ class _ReceiptStyles {
       );
 
   static TextStyle phone(AppSetupConfig setup, bool isPrintable) => TextStyle(
-        fontSize: _scale(setup.businessPhoneFontSize, isPrintable, 1.18),
-        fontWeight: FontWeight.w600,
-        height: 1.15,
-        color: Colors.black,
-      );
+    fontSize: _scale(setup.businessPhoneFontSize, isPrintable, 1.18),
+    fontWeight: FontWeight.w600,
+    height: 1.15,
+    color: Colors.black,
+  );
 
   static TextStyle label(AppSetupConfig setup, bool isPrintable) => TextStyle(
-        fontSize: isPrintable ? setup.receiptLabelFontSize : 16,
-        fontWeight: FontWeight.w500,
-        height: 1.25,
-        color: Colors.black,
-      );
+    fontSize: isPrintable ? setup.receiptLabelFontSize : 16,
+    fontWeight: FontWeight.w500,
+    height: 1.25,
+    color: Colors.black,
+  );
 
   static TextStyle value(AppSetupConfig setup, bool isPrintable) => TextStyle(
-        fontSize: isPrintable ? setup.receiptValueFontSize : 16,
-        fontWeight: FontWeight.w500,
-        height: 1.28,
-        color: Colors.black,
-      );
+    fontSize: isPrintable ? setup.receiptValueFontSize : 16,
+    fontWeight: FontWeight.w500,
+    height: 1.28,
+    color: Colors.black,
+  );
 
   static TextStyle footer(bool isPrintable) => TextStyle(
-        fontSize: isPrintable ? 22 : 16,
-        fontWeight: FontWeight.w600,
-        height: 1.2,
-        color: Colors.black,
-      );
+    fontSize: isPrintable ? 22 : 16,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    color: Colors.black,
+  );
 
   static double _scale(double value, bool isPrintable, double factor) {
     return isPrintable ? value * factor : value;

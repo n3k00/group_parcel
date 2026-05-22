@@ -21,6 +21,7 @@ void main() {
       senderPhone: '0912345678',
       receiverName: 'Ma Su',
       receiverPhone: '0998765432',
+      ledgerId: 'LEDGER-001',
       parcelType: 'General',
       numberOfParcels: 2,
       totalCharges: 12000,
@@ -31,7 +32,7 @@ void main() {
     const setup = AppSetupConfig(
       cityCode: 'TGI',
       accountCode: 'A1',
-      businessName: 'Group Parcel',
+      businessName: 'Group',
       businessSubtitle: ReceiptStrings.defaultBusinessSubtitle,
       businessAddress: ReceiptStrings.defaultBusinessAddress,
       businessPhone: '09-000-000000',
@@ -64,13 +65,15 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Group Parcel'), findsOneWidget);
+    expect(find.text('Group'), findsOneWidget);
     expect(find.text(ReceiptStrings.defaultBusinessSubtitle), findsOneWidget);
     expect(find.text(ReceiptStrings.trackingIdLabel), findsOneWidget);
     expect(find.text('TGI-A1-250317-0001'), findsOneWidget);
     expect(find.text(ReceiptStrings.remarkLabel), findsOneWidget);
     expect(find.text('Fragile'), findsOneWidget);
     expect(find.text(ReceiptStrings.totalChargesLabel), findsOneWidget);
+    expect(find.text(ReceiptStrings.ledgerIdLabel), findsNothing);
+    expect(find.text('LEDGER-001'), findsNothing);
     expect(find.text('Handle with care'), findsOneWidget);
   });
 }

@@ -20,7 +20,6 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _accountCodeController = TextEditingController();
 
   bool _didSeedControllers = false;
@@ -39,25 +38,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _didSeedControllers = true;
   }
 
-  Future<void> _save(AppSetupConfig currentSetup) async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    final nextSetup = currentSetup.copyWith(
-      accountCode: _accountCodeController.text.trim().toUpperCase(),
-    );
-
-    await ref.read(settingsSetupProvider.notifier).saveSetup(nextSetup);
-    if (!mounted) {
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text(AppStrings.profileSaved)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final setupAsync = ref.watch(settingsSetupProvider);
@@ -74,31 +54,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               SectionCard(
                 child: Padding(
                   padding: AppSpacing.cardPadding,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextFormField(
-                          controller: _accountCodeController,
-                          textCapitalization: TextCapitalization.characters,
-                          decoration: const InputDecoration(
-                            labelText: AppStrings.accountCodeLabel,
-                          ),
-                          validator: _accountCodeValidator,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: _accountCodeController,
+                        readOnly: true,
+                        decoration: const InputDecoration(
+                          labelText: AppStrings.accountCodeLabel,
+                          helperText: AppStrings.accountCodeHelper,
                         ),
-                        const SizedBox(height: AppSpacing.lg),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: setupAsync.isLoading
-                                ? null
-                                : () => _save(setup),
-                            child: const Text(AppStrings.saveChanges),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -109,13 +76,5 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         error: (error, _) => AppErrorView(message: error.toString()),
       ),
     );
-  }
-
-  String? _accountCodeValidator(String? value) {
-    final raw = (value ?? '').trim();
-    if (raw.isEmpty) {
-      return AppStrings.requiredField;
-    }
-    return null;
   }
 }

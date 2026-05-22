@@ -17,6 +17,7 @@ class ParcelMapper {
       senderPhone: row.senderPhone,
       receiverName: row.receiverName,
       receiverPhone: row.receiverPhone,
+      ledgerId: row.ledgerId,
       parcelType: row.parcelType,
       numberOfParcels: row.numberOfParcels,
       totalCharges: row.totalCharges,

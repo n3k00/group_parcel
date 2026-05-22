@@ -11,6 +11,7 @@ import '../../../../shared/widgets/app_loading.dart';
 import '../../../../shared/widgets/app_scaffold.dart';
 import '../../../parcel/presentation/screens/home_screen.dart';
 import '../../../printer/presentation/screens/printer_settings_screen.dart';
+import '../../../sync/presentation/widgets/sync_status_card.dart';
 import '../providers/settings_provider.dart';
 import 'from_town_settings_screen.dart';
 import 'profile_screen.dart';
@@ -60,6 +61,8 @@ class SettingsScreen extends ConsumerWidget {
                   vertical: AppSpacing.md,
                 ),
                 children: [
+                  const SyncStatusCard(),
+                  const SizedBox(height: AppSpacing.sm),
                   _SettingsListTile(
                     icon: Icons.person_outline_rounded,
                     title: AppStrings.profileTitle,

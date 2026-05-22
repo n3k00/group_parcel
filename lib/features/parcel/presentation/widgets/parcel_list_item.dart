@@ -76,6 +76,18 @@ class ParcelListItem extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      if ((parcel.ledgerId ?? '').trim().isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Ledger: ${parcel.ledgerId!.trim()}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: AppSpacing.xs),
                       Row(
                         children: [

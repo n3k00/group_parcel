@@ -47,6 +47,10 @@ abstract final class ParcelStrings {
   static const chooseFromGalleryTitle = 'Choose From Gallery';
   static const chooseFromGallerySubtitle = 'Pick an existing parcel image';
   static const nextAction = 'Next';
+  static const firstSyncRequiredMessage =
+      'Sync latest parcel history before creating the first parcel on this device.';
+  static const firstSyncInProgressMessage =
+      'Syncing latest parcel history before creating parcel...';
   static const fillRequiredFields = 'Fill all required fields.';
   static const voucherPreviewTitle = 'Voucher Preview';
   static const printAndSaveAction = 'Print and Save';
@@ -57,9 +61,8 @@ abstract final class ParcelStrings {
       'This tracking ID already exists. Open preview again and print with a new tracking ID.';
   static const invalidParcelCountMessage =
       'Parcel count must be greater than 0.';
-  static const invalidTotalChargesMessage =
-      'Total charges cannot be negative.';
-  static const invalidCashAdvanceMessage =
-      'Cash advance cannot be negative.';
-  static const parcelSaveFailedMessage = 'Parcel save failed. Please try again.';
+  static const invalidTotalChargesMessage = 'Total charges cannot be negative.';
+  static const invalidCashAdvanceMessage = 'Cash advance cannot be negative.';
+  static const parcelSaveFailedMessage =
+      'Parcel save failed. Please try again.';
 }

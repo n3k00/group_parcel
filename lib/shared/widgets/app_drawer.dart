@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants/auth_strings.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/parcel_strings.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../features/auth/presentation/providers/auth_provider.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/parcel/presentation/screens/home_screen.dart';
 import '../../features/parcel/presentation/screens/parcel_list_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends ConsumerWidget {
   const AppDrawer({super.key, required this.currentRoute});
 
   final String currentRoute;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
       child: SafeArea(
         child: Column(
@@ -50,6 +54,13 @@ class AppDrawer extends StatelessWidget {
               selected: currentRoute == SettingsScreen.routeName,
               onTap: () => _navigate(context, SettingsScreen.routeName),
             ),
+            const Spacer(),
+            _DrawerItem(
+              title: AuthStrings.logoutAction,
+              icon: Icons.logout_rounded,
+              selected: false,
+              onTap: () => _logout(context, ref),
+            ),
           ],
         ),
       ),
@@ -62,6 +73,21 @@ class AppDrawer extends StatelessWidget {
       return;
     }
     Navigator.of(context).pushReplacementNamed(routeName);
+  }
+
+  Future<void> _logout(BuildContext context, WidgetRef ref) async {
+    Navigator.of(context).pop();
+    await ref.read(authServiceProvider).signOut();
+    if (!context.mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text(AuthStrings.loggedOutMessage)),
+    );
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      LoginScreen.routeName,
+      (_) => false,
+    );
   }
 }
 

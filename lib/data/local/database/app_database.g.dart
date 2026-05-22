@@ -129,6 +129,17 @@ class $ParcelsTable extends Parcels with TableInfo<$ParcelsTable, Parcel> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _ledgerIdMeta = const VerificationMeta(
+    'ledgerId',
+  );
+  @override
+  late final GeneratedColumn<String> ledgerId = GeneratedColumn<String>(
+    'ledger_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _parcelTypeMeta = const VerificationMeta(
     'parcelType',
   );
@@ -280,6 +291,7 @@ class $ParcelsTable extends Parcels with TableInfo<$ParcelsTable, Parcel> {
     senderPhone,
     receiverName,
     receiverPhone,
+    ledgerId,
     parcelType,
     numberOfParcels,
     totalCharges,
@@ -400,6 +412,12 @@ class $ParcelsTable extends Parcels with TableInfo<$ParcelsTable, Parcel> {
       );
     } else if (isInserting) {
       context.missing(_receiverPhoneMeta);
+    }
+    if (data.containsKey('ledger_id')) {
+      context.handle(
+        _ledgerIdMeta,
+        ledgerId.isAcceptableOrUnknown(data['ledger_id']!, _ledgerIdMeta),
+      );
     }
     if (data.containsKey('parcel_type')) {
       context.handle(
@@ -538,6 +556,10 @@ class $ParcelsTable extends Parcels with TableInfo<$ParcelsTable, Parcel> {
         DriftSqlType.string,
         data['${effectivePrefix}receiver_phone'],
       )!,
+      ledgerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ledger_id'],
+      ),
       parcelType: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}parcel_type'],
@@ -626,6 +648,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
   final String senderPhone;
   final String receiverName;
   final String receiverPhone;
+  final String? ledgerId;
   final String parcelType;
   final int numberOfParcels;
   final double totalCharges;
@@ -651,6 +674,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
     required this.senderPhone,
     required this.receiverName,
     required this.receiverPhone,
+    this.ledgerId,
     required this.parcelType,
     required this.numberOfParcels,
     required this.totalCharges,
@@ -679,6 +703,9 @@ class Parcel extends DataClass implements Insertable<Parcel> {
     map['sender_phone'] = Variable<String>(senderPhone);
     map['receiver_name'] = Variable<String>(receiverName);
     map['receiver_phone'] = Variable<String>(receiverPhone);
+    if (!nullToAbsent || ledgerId != null) {
+      map['ledger_id'] = Variable<String>(ledgerId);
+    }
     map['parcel_type'] = Variable<String>(parcelType);
     map['number_of_parcels'] = Variable<int>(numberOfParcels);
     map['total_charges'] = Variable<double>(totalCharges);
@@ -730,6 +757,9 @@ class Parcel extends DataClass implements Insertable<Parcel> {
       senderPhone: Value(senderPhone),
       receiverName: Value(receiverName),
       receiverPhone: Value(receiverPhone),
+      ledgerId: ledgerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ledgerId),
       parcelType: Value(parcelType),
       numberOfParcels: Value(numberOfParcels),
       totalCharges: Value(totalCharges),
@@ -773,6 +803,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
       senderPhone: serializer.fromJson<String>(json['senderPhone']),
       receiverName: serializer.fromJson<String>(json['receiverName']),
       receiverPhone: serializer.fromJson<String>(json['receiverPhone']),
+      ledgerId: serializer.fromJson<String?>(json['ledgerId']),
       parcelType: serializer.fromJson<String>(json['parcelType']),
       numberOfParcels: serializer.fromJson<int>(json['numberOfParcels']),
       totalCharges: serializer.fromJson<double>(json['totalCharges']),
@@ -809,6 +840,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
       'senderPhone': serializer.toJson<String>(senderPhone),
       'receiverName': serializer.toJson<String>(receiverName),
       'receiverPhone': serializer.toJson<String>(receiverPhone),
+      'ledgerId': serializer.toJson<String?>(ledgerId),
       'parcelType': serializer.toJson<String>(parcelType),
       'numberOfParcels': serializer.toJson<int>(numberOfParcels),
       'totalCharges': serializer.toJson<double>(totalCharges),
@@ -843,6 +875,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
     String? senderPhone,
     String? receiverName,
     String? receiverPhone,
+    Value<String?> ledgerId = const Value.absent(),
     String? parcelType,
     int? numberOfParcels,
     double? totalCharges,
@@ -868,6 +901,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
     senderPhone: senderPhone ?? this.senderPhone,
     receiverName: receiverName ?? this.receiverName,
     receiverPhone: receiverPhone ?? this.receiverPhone,
+    ledgerId: ledgerId.present ? ledgerId.value : this.ledgerId,
     parcelType: parcelType ?? this.parcelType,
     numberOfParcels: numberOfParcels ?? this.numberOfParcels,
     totalCharges: totalCharges ?? this.totalCharges,
@@ -909,6 +943,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
       receiverPhone: data.receiverPhone.present
           ? data.receiverPhone.value
           : this.receiverPhone,
+      ledgerId: data.ledgerId.present ? data.ledgerId.value : this.ledgerId,
       parcelType: data.parcelType.present
           ? data.parcelType.value
           : this.parcelType,
@@ -953,6 +988,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
           ..write('senderPhone: $senderPhone, ')
           ..write('receiverName: $receiverName, ')
           ..write('receiverPhone: $receiverPhone, ')
+          ..write('ledgerId: $ledgerId, ')
           ..write('parcelType: $parcelType, ')
           ..write('numberOfParcels: $numberOfParcels, ')
           ..write('totalCharges: $totalCharges, ')
@@ -983,6 +1019,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
     senderPhone,
     receiverName,
     receiverPhone,
+    ledgerId,
     parcelType,
     numberOfParcels,
     totalCharges,
@@ -1012,6 +1049,7 @@ class Parcel extends DataClass implements Insertable<Parcel> {
           other.senderPhone == this.senderPhone &&
           other.receiverName == this.receiverName &&
           other.receiverPhone == this.receiverPhone &&
+          other.ledgerId == this.ledgerId &&
           other.parcelType == this.parcelType &&
           other.numberOfParcels == this.numberOfParcels &&
           other.totalCharges == this.totalCharges &&
@@ -1039,6 +1077,7 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
   final Value<String> senderPhone;
   final Value<String> receiverName;
   final Value<String> receiverPhone;
+  final Value<String?> ledgerId;
   final Value<String> parcelType;
   final Value<int> numberOfParcels;
   final Value<double> totalCharges;
@@ -1064,6 +1103,7 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
     this.senderPhone = const Value.absent(),
     this.receiverName = const Value.absent(),
     this.receiverPhone = const Value.absent(),
+    this.ledgerId = const Value.absent(),
     this.parcelType = const Value.absent(),
     this.numberOfParcels = const Value.absent(),
     this.totalCharges = const Value.absent(),
@@ -1090,6 +1130,7 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
     required String senderPhone,
     required String receiverName,
     required String receiverPhone,
+    this.ledgerId = const Value.absent(),
     required String parcelType,
     required int numberOfParcels,
     required double totalCharges,
@@ -1130,6 +1171,7 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
     Expression<String>? senderPhone,
     Expression<String>? receiverName,
     Expression<String>? receiverPhone,
+    Expression<String>? ledgerId,
     Expression<String>? parcelType,
     Expression<int>? numberOfParcels,
     Expression<double>? totalCharges,
@@ -1156,6 +1198,7 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
       if (senderPhone != null) 'sender_phone': senderPhone,
       if (receiverName != null) 'receiver_name': receiverName,
       if (receiverPhone != null) 'receiver_phone': receiverPhone,
+      if (ledgerId != null) 'ledger_id': ledgerId,
       if (parcelType != null) 'parcel_type': parcelType,
       if (numberOfParcels != null) 'number_of_parcels': numberOfParcels,
       if (totalCharges != null) 'total_charges': totalCharges,
@@ -1184,6 +1227,7 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
     Value<String>? senderPhone,
     Value<String>? receiverName,
     Value<String>? receiverPhone,
+    Value<String?>? ledgerId,
     Value<String>? parcelType,
     Value<int>? numberOfParcels,
     Value<double>? totalCharges,
@@ -1210,6 +1254,7 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
       senderPhone: senderPhone ?? this.senderPhone,
       receiverName: receiverName ?? this.receiverName,
       receiverPhone: receiverPhone ?? this.receiverPhone,
+      ledgerId: ledgerId ?? this.ledgerId,
       parcelType: parcelType ?? this.parcelType,
       numberOfParcels: numberOfParcels ?? this.numberOfParcels,
       totalCharges: totalCharges ?? this.totalCharges,
@@ -1261,6 +1306,9 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
     }
     if (receiverPhone.present) {
       map['receiver_phone'] = Variable<String>(receiverPhone.value);
+    }
+    if (ledgerId.present) {
+      map['ledger_id'] = Variable<String>(ledgerId.value);
     }
     if (parcelType.present) {
       map['parcel_type'] = Variable<String>(parcelType.value);
@@ -1324,6 +1372,7 @@ class ParcelsCompanion extends UpdateCompanion<Parcel> {
           ..write('senderPhone: $senderPhone, ')
           ..write('receiverName: $receiverName, ')
           ..write('receiverPhone: $receiverPhone, ')
+          ..write('ledgerId: $ledgerId, ')
           ..write('parcelType: $parcelType, ')
           ..write('numberOfParcels: $numberOfParcels, ')
           ..write('totalCharges: $totalCharges, ')
@@ -2049,6 +2098,7 @@ typedef $$ParcelsTableCreateCompanionBuilder =
       required String senderPhone,
       required String receiverName,
       required String receiverPhone,
+      Value<String?> ledgerId,
       required String parcelType,
       required int numberOfParcels,
       required double totalCharges,
@@ -2076,6 +2126,7 @@ typedef $$ParcelsTableUpdateCompanionBuilder =
       Value<String> senderPhone,
       Value<String> receiverName,
       Value<String> receiverPhone,
+      Value<String?> ledgerId,
       Value<String> parcelType,
       Value<int> numberOfParcels,
       Value<double> totalCharges,
@@ -2175,6 +2226,11 @@ class $$ParcelsTableFilterComposer
 
   ColumnFilters<String> get receiverPhone => $composableBuilder(
     column: $table.receiverPhone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ledgerId => $composableBuilder(
+    column: $table.ledgerId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2336,6 +2392,11 @@ class $$ParcelsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get ledgerId => $composableBuilder(
+    column: $table.ledgerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get parcelType => $composableBuilder(
     column: $table.parcelType,
     builder: (column) => ColumnOrderings(column),
@@ -2455,6 +2516,9 @@ class $$ParcelsTableAnnotationComposer
     column: $table.receiverPhone,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get ledgerId =>
+      $composableBuilder(column: $table.ledgerId, builder: (column) => column);
 
   GeneratedColumn<String> get parcelType => $composableBuilder(
     column: $table.parcelType,
@@ -2576,6 +2640,7 @@ class $$ParcelsTableTableManager
                 Value<String> senderPhone = const Value.absent(),
                 Value<String> receiverName = const Value.absent(),
                 Value<String> receiverPhone = const Value.absent(),
+                Value<String?> ledgerId = const Value.absent(),
                 Value<String> parcelType = const Value.absent(),
                 Value<int> numberOfParcels = const Value.absent(),
                 Value<double> totalCharges = const Value.absent(),
@@ -2601,6 +2666,7 @@ class $$ParcelsTableTableManager
                 senderPhone: senderPhone,
                 receiverName: receiverName,
                 receiverPhone: receiverPhone,
+                ledgerId: ledgerId,
                 parcelType: parcelType,
                 numberOfParcels: numberOfParcels,
                 totalCharges: totalCharges,
@@ -2628,6 +2694,7 @@ class $$ParcelsTableTableManager
                 required String senderPhone,
                 required String receiverName,
                 required String receiverPhone,
+                Value<String?> ledgerId = const Value.absent(),
                 required String parcelType,
                 required int numberOfParcels,
                 required double totalCharges,
@@ -2653,6 +2720,7 @@ class $$ParcelsTableTableManager
                 senderPhone: senderPhone,
                 receiverName: receiverName,
                 receiverPhone: receiverPhone,
+                ledgerId: ledgerId,
                 parcelType: parcelType,
                 numberOfParcels: numberOfParcels,
                 totalCharges: totalCharges,

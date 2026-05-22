@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,6 +10,7 @@ import '../../../../providers/printer_provider.dart';
 import '../../../../shared/helpers/printer_connect_navigation.dart';
 import '../../../../shared/widgets/app_drawer.dart';
 import '../../../../shared/widgets/app_scaffold.dart';
+import '../../../sync/presentation/providers/sync_provider.dart';
 import '../providers/parcel_form_provider.dart';
 import '../widgets/parcel_form_view.dart';
 import '../widgets/parcel_next_action_button.dart';
@@ -27,6 +30,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(parcelFormProvider.notifier).reset();
+      unawaited(ref.read(syncProvider.notifier).syncNow());
     });
   }
 

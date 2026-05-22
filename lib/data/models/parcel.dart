@@ -15,6 +15,7 @@ class ParcelModel {
     required this.senderPhone,
     required this.receiverName,
     required this.receiverPhone,
+    this.ledgerId,
     required this.parcelType,
     required this.numberOfParcels,
     required this.totalCharges,
@@ -40,6 +41,7 @@ class ParcelModel {
     required String senderPhone,
     required String receiverName,
     required String receiverPhone,
+    String? ledgerId,
     required String parcelType,
     required int numberOfParcels,
     required double totalCharges,
@@ -61,6 +63,7 @@ class ParcelModel {
       senderPhone: senderPhone,
       receiverName: receiverName,
       receiverPhone: receiverPhone,
+      ledgerId: ledgerId,
       parcelType: parcelType,
       numberOfParcels: numberOfParcels,
       totalCharges: totalCharges,
@@ -83,6 +86,7 @@ class ParcelModel {
   final String senderPhone;
   final String receiverName;
   final String receiverPhone;
+  final String? ledgerId;
   final String parcelType;
   final int numberOfParcels;
   final double totalCharges;
@@ -109,6 +113,8 @@ class ParcelModel {
     String? senderPhone,
     String? receiverName,
     String? receiverPhone,
+    String? ledgerId,
+    bool clearLedgerId = false,
     String? parcelType,
     int? numberOfParcels,
     double? totalCharges,
@@ -140,6 +146,7 @@ class ParcelModel {
       senderPhone: senderPhone ?? this.senderPhone,
       receiverName: receiverName ?? this.receiverName,
       receiverPhone: receiverPhone ?? this.receiverPhone,
+      ledgerId: clearLedgerId ? null : ledgerId ?? this.ledgerId,
       parcelType: parcelType ?? this.parcelType,
       numberOfParcels: numberOfParcels ?? this.numberOfParcels,
       totalCharges: totalCharges ?? this.totalCharges,
@@ -170,6 +177,7 @@ class ParcelModel {
       'senderPhone': senderPhone,
       'receiverName': receiverName,
       'receiverPhone': receiverPhone,
+      'ledgerId': ledgerId,
       'parcelType': parcelType,
       'numberOfParcels': numberOfParcels,
       'totalCharges': totalCharges,
@@ -199,6 +207,7 @@ class ParcelModel {
       senderPhone: map['senderPhone'] as String,
       receiverName: map['receiverName'] as String,
       receiverPhone: map['receiverPhone'] as String,
+      ledgerId: map['ledgerId'] as String?,
       parcelType: map['parcelType'] as String,
       numberOfParcels: (map['numberOfParcels'] as num).toInt(),
       totalCharges: (map['totalCharges'] as num).toDouble(),
